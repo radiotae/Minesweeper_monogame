@@ -6,6 +6,8 @@ namespace Minesweeper
 {
     public class Minesweeper : Game
     {
+        public const int WINDOW_HEIGHT = 
+
         private GraphicsDeviceManager _graphics;
         private SpriteBatch _spriteBatch;
 
@@ -21,6 +23,8 @@ namespace Minesweeper
             // TODO: Add your initialization logic here
 
             base.Initialize();
+
+            _graphics.PreferredBackBufferHeight =
         }
 
         protected override void LoadContent()
