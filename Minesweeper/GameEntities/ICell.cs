@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
@@ -6,13 +8,14 @@ namespace Minesweeper.GameEntities
 {
     interface ICell
     {
-        public enum CellState
-        {
-            Hidden,
-            Revealed,
-            Pressed,
-            Flagged
-        }
-        public int Value { get; }
+        //The Value of a Cell will be the number of bombs around the Cell OR -1 if the Cell is a bomb.
+        public int Value { get; set; }
+
+        public CellState State { get; set; }
+
+        void Draw(SpriteBatch spriteSheet, Vector2 position);
+
+        //Will return false if it is a bomb, true for otherwise.
+        bool Reveal();
     }
 }
