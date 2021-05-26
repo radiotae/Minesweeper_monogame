@@ -14,20 +14,28 @@ namespace Minesweeper.GameEntities
 
         public Board()
         {
-            CellList = new ICell[BOARD_WIDTH,BOARD_HEIGHT];
             _random = new Random();
+
+            MakeNewBoard();
         }
 
         public void MakeNewBoard()
         {
-            foreach (ICell cell in CellList)
+            //First sets all cell values to 0 and to hidden
+            CellList = new ICell[BOARD_WIDTH, BOARD_HEIGHT];
+
+            for (int i = 0; i < BOARD_WIDTH; i++)
             {
-                cell.Value = 0;
-                cell.State = CellState.Hidden;
+                for (int j = 0; j < BOARD_HEIGHT; j++)
+                {
+                    CellList[i, j] = new SafeCell();
+                }
             }
 
             int setBombs = 0;
 
+            //Gets a random x and y value and checks to see if that position has a bomb. If it doesn't, add bomb.
+            //Do this until there is 99 bombs.
             while (setBombs < 99)
             {
                 int x = _random.Next(1, BOARD_WIDTH + 1);
@@ -35,11 +43,10 @@ namespace Minesweeper.GameEntities
 
                 if (CellList[x, y].Value != -1)
                 {
-                    CellList[x, y].Value = -1;
-
+                    CellList[x, y] = new BombCell();
                     List<ICell> surroundingCells = GetSurroundingCells(x, y);
 
-                    foreach (ICell cell in surroundingCells)
+                    foreach (SafeCell cell in surroundingCells)
                     {
                         cell.Value++;
                     }
@@ -49,7 +56,7 @@ namespace Minesweeper.GameEntities
             }
         }
 
-        public List<ICell> GetSurroundingCells(int x, int y)
+        public List<ICell> GetSurroundingCells(int x, int y, bool key = true)
         {
             List<ICell> cellList = new List<ICell>();
 
