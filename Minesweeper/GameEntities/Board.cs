@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
@@ -13,7 +15,7 @@ namespace Minesweeper.GameEntities
         private Random _random;
         private GameState gameState;
 
-        public Board()
+        public Board(SpriteFont font)
         {
             _random = new Random();
 
@@ -43,8 +45,8 @@ namespace Minesweeper.GameEntities
             //Do this until there is 99 bombs.
             while (setBombs < 99)
             {
-                int x = _random.Next(1, BOARD_WIDTH + 1);
-                int y = _random.Next(1, BOARD_HEIGHT + 1);
+                int x = _random.Next(0, BOARD_WIDTH );
+                int y = _random.Next(0, BOARD_HEIGHT);
 
                 if (CellList[x, y].Value != -1)
                 {
@@ -53,9 +55,10 @@ namespace Minesweeper.GameEntities
                     CellList[x, y].posY = y;
                     List<ICell> surroundingCells = GetSurroundingCells(x, y);
 
-                    foreach (SafeCell cell in surroundingCells)
+                    foreach (ICell cell in surroundingCells)
                     {
-                        cell.Value++;
+                        if (cell.Value != -1)
+                            cell.Value++;
                     }
 
                     setBombs++;
@@ -112,6 +115,14 @@ namespace Minesweeper.GameEntities
             {
                 CellList[x, y].Reveal();
                 return;
+            }
+        }
+
+        public void Draw(SpriteBatch spriteBatch, SpriteFont font)
+        {
+            foreach(ICell cell in CellList)
+            {
+                spriteBatch.DrawString(font, cell.Value.ToString(), new Vector2(50 + cell.posX * 20, 65 + cell.posY * 20), Color.Black);
             }
         }
     }

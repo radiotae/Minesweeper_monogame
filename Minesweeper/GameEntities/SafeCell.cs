@@ -20,9 +20,9 @@ namespace Minesweeper.GameEntities
             State = CellState.Hidden;
         }
 
-        public void Draw(SpriteBatch spriteSheet, Vector2 position)
+        public void Draw(SpriteBatch spriteBatch, Vector2 position)
         {
-
+            
         }
 
         public bool Reveal()

@@ -1,6 +1,8 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using Minesweeper.GameEntities;
+using Minesweeper.System;
 
 namespace Minesweeper
 {
@@ -11,6 +13,14 @@ namespace Minesweeper
 
         private GraphicsDeviceManager _graphics;
         private SpriteBatch _spriteBatch;
+
+        private SpriteFont font;
+
+        private Board _board;
+        private InputManager _inputManager;
+
+        private Texture2D _test;
+        
 
         public Minesweeper()
         {
@@ -24,13 +34,24 @@ namespace Minesweeper
             // TODO: Add your initialization logic here
 
             base.Initialize();
-
-            _graphics.PreferredBackBufferHeight =
+            
+            _graphics.PreferredBackBufferHeight = 450;
+            _graphics.PreferredBackBufferWidth = 700;
+            _graphics.ApplyChanges();
         }
 
         protected override void LoadContent()
         {
             _spriteBatch = new SpriteBatch(GraphicsDevice);
+
+            font = Content.Load<SpriteFont>("Cells");
+
+            _board = new Board(font);
+
+            _inputManager = new InputManager(_board);
+
+            _test = new Texture2D(GraphicsDevice, 1, 1);
+            _test.SetData(new Color[] { Color.Blue });
 
             // TODO: use this.Content to load your game content here
         }
@@ -40,6 +61,8 @@ namespace Minesweeper
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
 
+            _inputManager.ProcessControls(gameTime);
+
             // TODO: Add your update logic here
 
             base.Update(gameTime);
@@ -47,9 +70,16 @@ namespace Minesweeper
 
         protected override void Draw(GameTime gameTime)
         {
-            GraphicsDevice.Clear(Color.CornflowerBlue);
+            GraphicsDevice.Clear(Color.White);
 
             // TODO: Add your drawing code here
+            _spriteBatch.Begin();
+
+
+            _board.Draw(_spriteBatch, font);
+
+            _spriteBatch.End();
+
 
             base.Draw(gameTime);
         }
