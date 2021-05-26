@@ -13,14 +13,14 @@ namespace Minesweeper.GameEntities
 
         private ICell[,] CellList;
         private Random _random;
-        public GameState gameState;
+        public GameState GameState;
 
         public Board(SpriteFont font)
         {
             _random = new Random();
 
             MakeNewBoard();
-            gameState = GameState.Running;
+            GameState = GameState.Running;
         }
 
         public void MakeNewBoard()
@@ -64,9 +64,11 @@ namespace Minesweeper.GameEntities
                     setBombs++;
                 }
             }
+
+            GameState = GameState.Running;
         }
 
-        public List<ICell> GetSurroundingCells(int x, int y, bool key = true)
+        public List<ICell> GetSurroundingCells(int x, int y)
         {
             List<ICell> cellList = new List<ICell>();
 
@@ -99,7 +101,7 @@ namespace Minesweeper.GameEntities
                 && y < BOARD_HEIGHT;
         }
 
-        public void Reveal(int x, int y)
+        public bool Reveal(int x, int y)
         {
             if (CellList[x,y].Value == 0)
             {
@@ -111,11 +113,11 @@ namespace Minesweeper.GameEntities
                     if (cell.State == CellState.Hidden)
                         Reveal(cell.posX, cell.posY);
                 }
+                return true;
             }
             else
             {
-                CellList[x, y].Reveal();
-                return;
+                return CellList[x, y].Reveal();
             }
         }
 

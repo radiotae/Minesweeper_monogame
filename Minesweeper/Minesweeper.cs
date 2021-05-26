@@ -8,7 +8,7 @@ namespace Minesweeper
 {
     public class Minesweeper : Game
     {
-
+        
         public const int WINDOW_HEIGHT = 200;
 
         private GraphicsDeviceManager _graphics;
