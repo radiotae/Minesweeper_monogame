@@ -13,7 +13,7 @@ namespace Minesweeper.GameEntities
 
         private ICell[,] CellList;
         private Random _random;
-        private GameState gameState;
+        public GameState gameState;
 
         public Board(SpriteFont font)
         {
@@ -108,7 +108,8 @@ namespace Minesweeper.GameEntities
 
                 foreach (SafeCell cell in surroundingCells)
                 {
-                    Reveal(cell.posX, cell.posY);
+                    if (cell.State == CellState.Hidden)
+                        Reveal(cell.posX, cell.posY);
                 }
             }
             else
@@ -118,12 +119,39 @@ namespace Minesweeper.GameEntities
             }
         }
 
+        public void SetCellState (int x, int y, CellState state)
+        {
+            CellList[x, y].State = state;
+        }
+
+        public CellState GetCellState(int x, int y)
+        {
+            return CellList[x, y].State;
+        }
+
         public void Draw(SpriteBatch spriteBatch, SpriteFont font)
         {
             foreach(ICell cell in CellList)
             {
-                spriteBatch.DrawString(font, cell.Value.ToString(), new Vector2(50 + cell.posX * 20, 65 + cell.posY * 20), Color.Black);
+                if (cell.State == CellState.Hidden)
+                    spriteBatch.DrawString(font, cell.Value.ToString(), new Vector2(50 + cell.posX * 20, 65 + cell.posY * 20), Color.Gray);
+                else if (cell.State == CellState.Revealed)
+                    spriteBatch.DrawString(font, cell.Value.ToString(), new Vector2(50 + cell.posX * 20, 65 + cell.posY * 20), Color.Black);
+                else if (cell.State == CellState.Pressed)
+                    spriteBatch.DrawString(font, cell.Value.ToString(), new Vector2(50 + cell.posX * 20, 65 + cell.posY * 20), Color.Green);
+
+                else
+                    spriteBatch.DrawString(font, cell.Value.ToString(), new Vector2(50 + cell.posX * 20, 65 + cell.posY * 20), Color.Red);
             }
+        }
+
+        public void Update(GameTime gameTime)
+        {
+            /*
+            foreach(ICell in CellList)
+            {
+
+            }*/
         }
     }
 }
