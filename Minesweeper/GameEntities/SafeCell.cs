@@ -11,19 +11,24 @@ namespace Minesweeper.GameEntities
         public int Value { get; set; }
         public CellState State { get; set; }
 
+        public int posX { get; set; }
+        public int posY { get; set;  }
+
         public SafeCell()
         {
             Value = 0;
+            State = CellState.Hidden;
         }
 
         public void Draw(SpriteBatch spriteSheet, Vector2 position)
         {
-            throw new NotImplementedException();
+
         }
 
         public bool Reveal()
         {
-            throw new NotImplementedException();
+            State = CellState.Revealed;
+            return true;
         }
 
         

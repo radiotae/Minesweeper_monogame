@@ -11,12 +11,14 @@ namespace Minesweeper.GameEntities
 
         private ICell[,] CellList;
         private Random _random;
+        private GameState gameState;
 
         public Board()
         {
             _random = new Random();
 
             MakeNewBoard();
+            gameState = GameState.Running;
         }
 
         public void MakeNewBoard()
@@ -29,6 +31,9 @@ namespace Minesweeper.GameEntities
                 for (int j = 0; j < BOARD_HEIGHT; j++)
                 {
                     CellList[i, j] = new SafeCell();
+                    CellList[i, j].posX = i;
+                    CellList[i, j].posY = j;
+
                 }
             }
 
@@ -44,6 +49,8 @@ namespace Minesweeper.GameEntities
                 if (CellList[x, y].Value != -1)
                 {
                     CellList[x, y] = new BombCell();
+                    CellList[x, y].posX = x;
+                    CellList[x, y].posY = y;
                     List<ICell> surroundingCells = GetSurroundingCells(x, y);
 
                     foreach (SafeCell cell in surroundingCells)
@@ -87,6 +94,25 @@ namespace Minesweeper.GameEntities
                 && x < BOARD_WIDTH
                 && y >= 0
                 && y < BOARD_HEIGHT;
+        }
+
+        public void Reveal(int x, int y)
+        {
+            if (CellList[x,y].Value == 0)
+            {
+                CellList[x, y].Reveal();
+                List<ICell> surroundingCells = GetSurroundingCells(x, y);
+
+                foreach (SafeCell cell in surroundingCells)
+                {
+                    Reveal(cell.posX, cell.posY);
+                }
+            }
+            else
+            {
+                CellList[x, y].Reveal();
+                return;
+            }
         }
     }
 }
