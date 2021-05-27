@@ -131,6 +131,11 @@ namespace Minesweeper.GameEntities
             return CellList[x, y].State;
         }
 
+        public int GetCellValue(int x, int y)
+        {
+            return CellList[x, y].Value;
+        }
+
         public void Draw(SpriteBatch spriteBatch, SpriteFont font)
         {
             foreach(ICell cell in CellList)
