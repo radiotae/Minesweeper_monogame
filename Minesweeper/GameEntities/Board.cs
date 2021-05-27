@@ -101,6 +101,10 @@ namespace Minesweeper.GameEntities
                 && y < BOARD_HEIGHT;
         }
 
+        //A recursive call that calls the reveal function on the cell whose coordinates have been passed.
+        //If a bomb is revealed (value is -1), return false.
+        //If the value is 0, calls this function recursively on all the surrounding cells
+        //Otherwise, calls the reveal function of the cell which simply sets the cellstate to revealed
         public bool Reveal(int x, int y)
         {
             if (CellList[x,y].Value == 0)
@@ -136,6 +140,7 @@ namespace Minesweeper.GameEntities
             return CellList[x, y].Value;
         }
 
+        //Gets the 
         public void Draw(SpriteBatch spriteBatch, SpriteFont font)
         {
             foreach(ICell cell in CellList)
