@@ -16,7 +16,7 @@ namespace Minesweeper.GameEntities
 
         public CellState State { get; set; }
 
-        void Draw(SpriteBatch spriteSheet, Vector2 position);
+        void Draw(SpriteBatch spriteBatch, Vector2 position, SpriteFont font);
 
         //Will return false if it is a bomb, true for otherwise.
         bool Reveal();

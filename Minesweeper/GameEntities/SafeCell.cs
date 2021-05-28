@@ -20,9 +20,16 @@ namespace Minesweeper.GameEntities
             State = CellState.Hidden;
         }
 
-        public void Draw(SpriteBatch spriteBatch, Vector2 position)
+        public void Draw(SpriteBatch spriteBatch, Vector2 position, SpriteFont font)
         {
-            
+            if (State == CellState.Hidden)
+                spriteBatch.DrawString(font, Value.ToString(), position, Color.Gray);
+            if (State == CellState.Revealed)
+                spriteBatch.DrawString(font, Value.ToString(), position, Color.Black);
+            if (State == CellState.Pressed)
+                spriteBatch.DrawString(font, Value.ToString(), position, Color.Green);
+            if (State == CellState.Flagged)
+                spriteBatch.DrawString(font, Value.ToString(), position, Color.Red);
         }
 
         public bool Reveal()

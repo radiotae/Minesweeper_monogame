@@ -10,10 +10,15 @@ namespace Minesweeper.GameEntities
     {
         public const int BOARD_WIDTH = 30;
         public const int BOARD_HEIGHT = 16;
+        public const int TOTAL_BOMBS = 99;
+        public const int TOTAL_SAFE_CELLS = BOARD_WIDTH * BOARD_HEIGHT - TOTAL_BOMBS;
 
         private ICell[,] CellList;
         private Random _random;
-        public GameState GameState;
+
+        private int _bombsFlagged;
+        private int _revealed;
+        public GameState GameState { get; private set; }
 
         public Board(SpriteFont font)
         {
@@ -43,7 +48,7 @@ namespace Minesweeper.GameEntities
 
             //Gets a random x and y value and checks to see if that position has a bomb. If it doesn't, add bomb.
             //Do this until there is 99 bombs.
-            while (setBombs < 99)
+            while (setBombs < TOTAL_BOMBS)
             {
                 int x = _random.Next(0, BOARD_WIDTH );
                 int y = _random.Next(0, BOARD_HEIGHT);
@@ -65,10 +70,12 @@ namespace Minesweeper.GameEntities
                 }
             }
 
+            _bombsFlagged = 0;
+            _revealed = 0;
             GameState = GameState.Running;
         }
 
-        public List<ICell> GetSurroundingCells(int x, int y)
+        private List<ICell> GetSurroundingCells(int x, int y)
         {
             List<ICell> cellList = new List<ICell>();
 
@@ -105,9 +112,10 @@ namespace Minesweeper.GameEntities
         //If a bomb is revealed (value is -1), return false.
         //If the value is 0, calls this function recursively on all the surrounding cells
         //Otherwise, calls the reveal function of the cell which simply sets the cellstate to revealed
-        public bool Reveal(int x, int y)
+        public void Reveal(int x, int y)
         {
-            if (CellList[x,y].Value == 0)
+            _revealed++;
+            if (CellList[x, y].Value == 0)
             {
                 CellList[x, y].Reveal();
                 List<ICell> surroundingCells = GetSurroundingCells(x, y);
@@ -117,12 +125,9 @@ namespace Minesweeper.GameEntities
                     if (cell.State == CellState.Hidden)
                         Reveal(cell.posX, cell.posY);
                 }
-                return true;
             }
-            else
-            {
-                return CellList[x, y].Reveal();
-            }
+            else if (!CellList[x, y].Reveal())
+                GameState = GameState.GameOver;
         }
 
         public void SetCellState (int x, int y, CellState state)
@@ -143,27 +148,78 @@ namespace Minesweeper.GameEntities
         //Gets the 
         public void Draw(SpriteBatch spriteBatch, SpriteFont font)
         {
-            foreach(ICell cell in CellList)
+            for (int x = 0; x < BOARD_WIDTH; x++)
+            {
+                for (int y = 0; y < BOARD_HEIGHT; y++)
+                {
+                    CellList[x, y].Draw(spriteBatch, new Vector2(50 + x * 20, 65 + y * 20), font);
+                }
+            }
+        }
+
+        public void PressSurroundingCells(int x, int y)
+        {
+            List<ICell> surroundingCells = GetSurroundingCells(x, y);
+
+            foreach (ICell cell in surroundingCells)
             {
                 if (cell.State == CellState.Hidden)
-                    spriteBatch.DrawString(font, cell.Value.ToString(), new Vector2(50 + cell.posX * 20, 65 + cell.posY * 20), Color.Gray);
-                else if (cell.State == CellState.Revealed)
-                    spriteBatch.DrawString(font, cell.Value.ToString(), new Vector2(50 + cell.posX * 20, 65 + cell.posY * 20), Color.Black);
-                else if (cell.State == CellState.Pressed)
-                    spriteBatch.DrawString(font, cell.Value.ToString(), new Vector2(50 + cell.posX * 20, 65 + cell.posY * 20), Color.Green);
+                    cell.State = CellState.Pressed;
+            }
+        }
 
-                else
-                    spriteBatch.DrawString(font, cell.Value.ToString(), new Vector2(50 + cell.posX * 20, 65 + cell.posY * 20), Color.Red);
+        public void FullCheck(int x, int y)
+        {
+            int bombCheck = 0;
+
+            List<ICell> surroundingCells = GetSurroundingCells(x, y);
+
+            foreach (ICell checkCell in surroundingCells)
+            {
+                if (checkCell.State == CellState.Flagged)
+                {
+                    bombCheck++;
+                }
+            }
+
+            if (bombCheck == CellList[x, y].Value)
+            {
+                foreach (ICell checkCell in surroundingCells)
+                {
+                    if (checkCell.State == CellState.Hidden)
+                        Reveal(checkCell.posX, checkCell.posY);
+
+                }
+
+            }
+        }
+
+        public void AddOrRemoveFlag(int x, int y)
+        {
+            if (CellList[x, y].State == CellState.Hidden)
+            {
+                CellList[x, y].State = CellState.Flagged;
+                _bombsFlagged++;
+            }
+            else if (CellList[x, y].State == CellState.Flagged)
+            {
+                CellList[x, y].State = CellState.Hidden;
+                _bombsFlagged--;
             }
         }
 
         public void Update(GameTime gameTime)
         {
-            /*
-            foreach(ICell in CellList)
-            {
+            if (_revealed == TOTAL_SAFE_CELLS)
+                GameState = GameState.Victory;
 
-            }*/
+            //Unpressed all pressed HIDDEN cells
+            foreach(ICell cell in CellList)
+            {
+                if (cell.State == CellState.Pressed)
+                    cell.State = CellState.Hidden;
+            }
+            
         }
     }
 }

@@ -61,6 +61,7 @@ namespace Minesweeper
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
 
+            _board.Update(gameTime);
             _inputManager.ProcessControls(gameTime);
 
             // TODO: Add your update logic here
