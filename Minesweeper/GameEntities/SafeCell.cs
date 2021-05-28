@@ -24,11 +24,13 @@ namespace Minesweeper.GameEntities
         {
             if (State == CellState.Hidden)
                 spriteBatch.DrawString(font, Value.ToString(), position, Color.Gray);
-            if (State == CellState.Revealed)
+            else if (State == CellState.Revealed)
+            {
                 spriteBatch.DrawString(font, Value.ToString(), position, Color.Black);
-            if (State == CellState.Pressed)
+            }
+            else if (State == CellState.Pressed)
                 spriteBatch.DrawString(font, Value.ToString(), position, Color.Green);
-            if (State == CellState.Flagged)
+            else if (State == CellState.Flagged)
                 spriteBatch.DrawString(font, Value.ToString(), position, Color.Red);
         }
 
