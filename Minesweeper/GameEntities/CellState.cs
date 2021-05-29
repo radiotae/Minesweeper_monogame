@@ -5,6 +5,8 @@
         Hidden,
         Revealed,
         Pressed,
-        Flagged
+        Flagged,
+        MissingBomb,
+        WrongFlag
     }
 }

@@ -36,8 +36,8 @@ namespace Minesweeper
 
             base.Initialize();
             
-            _graphics.PreferredBackBufferHeight = 500;
-            _graphics.PreferredBackBufferWidth = 700;
+            _graphics.PreferredBackBufferHeight = 390;
+            _graphics.PreferredBackBufferWidth = 650;
             _graphics.ApplyChanges();
         }
 

@@ -14,10 +14,18 @@ namespace Minesweeper.GameEntities
         public const int TOTAL_SAFE_CELLS = BOARD_WIDTH * BOARD_HEIGHT - TOTAL_BOMBS;
 
         public const int CELL_SIZE = 20;
-        private const int WIDTH_MARGIN = 50;
-        private const int HEIGHT_MARGIN = 140;
+        private const int WIDTH_MARGIN = 25;
+        private const int HEIGHT_MARGIN = 50;
+        private const int RESET_BUTTON_HEIGH_MARGIN = 10;
         private ICell[,] _cellList;
         private Random _random;
+        private ResetButton _reset;
+
+        private double _realTime;
+        private int _displayTime => (int) _realTime;
+        private bool _realHasStarted;
+
+        //private bool _firstClick;
 
         private int _bombsFlagged;
         private int _revealed;
@@ -28,10 +36,15 @@ namespace Minesweeper.GameEntities
             _random = new Random();
 
             MakeNewBoard();
+
+            _reset = new ResetButton();
         }
 
         public void MakeNewBoard()
         {
+            _realTime = 0;
+            _realHasStarted = false;
+            //_firstClick = false;
             //First sets all cell values to 0 and to hidden
             _cellList = new ICell[BOARD_WIDTH, BOARD_HEIGHT];
 
@@ -119,6 +132,16 @@ namespace Minesweeper.GameEntities
         //Otherwise, calls the reveal function of the cell which simply sets the cellstate to revealed
         public void Reveal(int x, int y)
         {
+            if(_revealed == 0 && _cellList[x,y].Value == -1)
+            {
+                do
+                {
+                    MakeNewBoard();
+                } while (_cellList[x, y].Value == -1);
+
+                _realHasStarted = true;
+            }
+
             _revealed++; //NEED TO TEST IF THIS WORKS ==================================================================================================================================================
             if (_cellList[x, y].Value == 0)
             {
@@ -159,16 +182,7 @@ namespace Minesweeper.GameEntities
 
         public void Draw(SpriteBatch spriteBatch, Texture2D spriteSheet)
         {
-            if (GameState == GameState.Running)
-                spriteBatch.Draw(spriteSheet,
-                    new Rectangle(0, 20, 25, 25),
-                    new Rectangle(232, 0, 23, 23),
-                    Color.White);
-            else if(GameState == GameState.GameOver)
-                spriteBatch.Draw(spriteSheet,
-                    new Rectangle(0, 20, 25, 25),
-                    new Rectangle(232 + 24, 0, 23, 23),
-                    Color.White);
+            _reset.Draw(spriteBatch, new Rectangle(350 - 30 / 2, RESET_BUTTON_HEIGH_MARGIN, 30, 30), spriteSheet, GameState);
 
             for (int x = 0; x < BOARD_WIDTH; x++)
             {
@@ -178,6 +192,22 @@ namespace Minesweeper.GameEntities
                     _cellList[x, y].Draw(spriteBatch, new Rectangle(WIDTH_MARGIN + x * CELL_SIZE, HEIGHT_MARGIN + y * CELL_SIZE, 20, 20), spriteSheet);
                 }
             }
+
+            int[] time = SplitDigits(_displayTime);
+            spriteBatch.Draw(spriteSheet,
+                new Rectangle(650 - 3 * 18 - 5, 5, 18, 33),
+                new Rectangle(128, 253 - (12 + 1) * time[0], 12, 22),
+                Color.White);
+
+            spriteBatch.Draw(spriteSheet,
+                new Rectangle(650 - 2 * 18 - 5, 5, 18, 33),
+                new Rectangle(128, 253 - (12 + 1) * time[1], 12, 22),
+                Color.White);
+
+            spriteBatch.Draw(spriteSheet,
+                new Rectangle(650 - 1 * 18 - 5, 5, 18, 33),
+                new Rectangle(128 , 253 - (12 + 1) * time[2], 12, 22),
+                Color.White);
         }
 
         //Given the input cell coordinates, will press the surrounding cells IF they are hidden
@@ -190,6 +220,18 @@ namespace Minesweeper.GameEntities
                 if (cell.State == CellState.Hidden)
                     cell.State = CellState.Pressed;
             }
+        }
+
+        private int[] SplitDigits(int input)
+        {
+            string inputStr = input.ToString().PadLeft(3, '0');
+            int[] result = new int[inputStr.Length];
+            for (int i = 0; i < result.Length; ++i)
+            {
+                result[i] = (int)char.GetNumericValue(inputStr[i]);
+            }
+
+            return result;
         }
 
         //Will check the surrounding cells of the input coordinate (if revealed) and check the number
@@ -240,12 +282,22 @@ namespace Minesweeper.GameEntities
             }
         }
 
+        public void HoldReset()
+        {
+            _reset.Press();
+        }
+
 
         //When the Board updates, it will check to see if the revealed cells is equal to the total number of safe cells in the board.
         //If so, change the state of the game to Victory AND flag any bombs that are still hidden
         //Update will ALSO unpress every button, which is ok because inputmanager updates afterwards so buttons can still be pressed
         public void Update(GameTime gameTime)
         {
+            if (GameState == GameState.Running && _realHasStarted)
+                _realTime += gameTime.ElapsedGameTime.TotalSeconds;
+
+            _reset.Release();
+
             if (_revealed == TOTAL_SAFE_CELLS && GameState == GameState.Running)
             {
                 GameState = GameState.Victory;

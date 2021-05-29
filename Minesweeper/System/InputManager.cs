@@ -9,8 +9,8 @@ namespace Minesweeper.System
 {
     class InputManager
     {
-        public const int X_MARGIN = 50;
-        public const int Y_MARGIN = 140;
+        public const int X_MARGIN = 25;
+        public const int Y_MARGIN = 50;
         private const int CELL_SIZE = 20;
         private MouseState _previousMouse;
         private Board _board;
@@ -20,7 +20,7 @@ namespace Minesweeper.System
         public InputManager(Board board)
         {
             _board = board;
-            _reset = new Rectangle(0, 0, X_MARGIN, X_MARGIN);
+            _reset = new Rectangle(350 - 30 / 2, 20, 30, 30);
         }
 
         public void ProcessControls(GameTime gameTime)
@@ -32,6 +32,9 @@ namespace Minesweeper.System
                 && currentMouse.LeftButton == ButtonState.Released
                 && _reset.Contains(currentMouse.Position))
                 _board.MakeNewBoard();
+
+            if (_reset.Contains(currentMouse.Position) && currentMouse.LeftButton == ButtonState.Pressed)
+                _board.HoldReset();
 
             //Only accept inputs when GameState is set to Running
             if (_board.GameState == GameState.Running)

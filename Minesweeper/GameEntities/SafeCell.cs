@@ -35,6 +35,8 @@ namespace Minesweeper.GameEntities
                 spriteBatch.Draw(spriteSheet, rect, new Rectangle(0, 656, CELL_SIZE, CELL_SIZE), Color.White);
             else if (State == CellState.Flagged)
                 spriteBatch.Draw(spriteSheet, rect, new Rectangle(128, 624, CELL_SIZE, CELL_SIZE), Color.White);
+            else if (State == CellState.WrongFlag)
+                spriteBatch.Draw(spriteSheet, rect, new Rectangle(0, 256, CELL_SIZE, CELL_SIZE), Color.White);
 
             //spriteBatch.Draw(spriteSheet, position, new Rectangle(0, 656, 15, 15), Color.White);
 
