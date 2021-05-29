@@ -13,6 +13,9 @@ namespace Minesweeper.GameEntities
         public const int TOTAL_BOMBS = 99;
         public const int TOTAL_SAFE_CELLS = BOARD_WIDTH * BOARD_HEIGHT - TOTAL_BOMBS;
 
+        public const int CELL_SIZE = 20;
+        private const int WIDTH_MARGIN = 50;
+        private const int HEIGHT_MARGIN = 140;
         private ICell[,] _cellList;
         private Random _random;
 
@@ -154,13 +157,25 @@ namespace Minesweeper.GameEntities
         }
 
 
-        public void Draw(SpriteBatch spriteBatch, SpriteFont font)
+        public void Draw(SpriteBatch spriteBatch, Texture2D spriteSheet)
         {
+            if (GameState == GameState.Running)
+                spriteBatch.Draw(spriteSheet,
+                    new Rectangle(0, 20, 25, 25),
+                    new Rectangle(232, 0, 23, 23),
+                    Color.White);
+            else if(GameState == GameState.GameOver)
+                spriteBatch.Draw(spriteSheet,
+                    new Rectangle(0, 20, 25, 25),
+                    new Rectangle(232 + 24, 0, 23, 23),
+                    Color.White);
+
             for (int x = 0; x < BOARD_WIDTH; x++)
             {
                 for (int y = 0; y < BOARD_HEIGHT; y++)
                 {
-                    _cellList[x, y].Draw(spriteBatch, new Vector2(50 + x * 20, 65 + y * 20), font);
+                    //_cellList[x, y].Draw(spriteBatch, new Vector2(WIDTH_MARGIN + x * CELL_SIZE, HEIGHT_MARGIN + y * CELL_SIZE), spriteSheet);
+                    _cellList[x, y].Draw(spriteBatch, new Rectangle(WIDTH_MARGIN + x * CELL_SIZE, HEIGHT_MARGIN + y * CELL_SIZE, 20, 20), spriteSheet);
                 }
             }
         }

@@ -10,7 +10,7 @@ namespace Minesweeper.System
     class InputManager
     {
         public const int X_MARGIN = 50;
-        public const int Y_MARGIN = 65;
+        public const int Y_MARGIN = 140;
         private const int CELL_SIZE = 20;
         private MouseState _previousMouse;
         private Board _board;

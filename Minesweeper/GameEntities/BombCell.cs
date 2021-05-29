@@ -8,6 +8,8 @@ namespace Minesweeper.GameEntities
 {
     class BombCell : ICell
     {
+        public const int CELL_SIZE = 15;
+
         public int Value { get; set; }
         public CellState State { get; set; }
 
@@ -20,16 +22,20 @@ namespace Minesweeper.GameEntities
             State = CellState.Hidden;
         }
 
-        public void Draw(SpriteBatch spriteBatch, Vector2 position, SpriteFont font)
+        public void Draw(SpriteBatch spriteBatch, Rectangle rect, Texture2D spriteSheet)
         {
+            
             if (State == CellState.Hidden)
-                spriteBatch.DrawString(font, Value.ToString(), position, Color.Gray);
+                spriteBatch.Draw(spriteSheet, rect, new Rectangle(0, 0, CELL_SIZE, CELL_SIZE), Color.White);
             else if (State == CellState.Revealed)
-                spriteBatch.DrawString(font, Value.ToString(), position, Color.Black);
+                spriteBatch.Draw(spriteSheet, rect, new Rectangle(128, 640, CELL_SIZE, CELL_SIZE), Color.White);
             else if (State == CellState.Pressed)
-                spriteBatch.DrawString(font, Value.ToString(), position, Color.Green);
+                spriteBatch.Draw(spriteSheet, rect, new Rectangle(0, 656, CELL_SIZE, CELL_SIZE), Color.White);
             else if (State == CellState.Flagged)
-                spriteBatch.DrawString(font, Value.ToString(), position, Color.Red);
+                spriteBatch.Draw(spriteSheet, rect, new Rectangle(128, 624, CELL_SIZE, CELL_SIZE), Color.White);
+
+            //spriteBatch.Draw(spriteSheet, position, new Rectangle(128, 656, 15, 15), Color.White);
+            //spriteBatch.Draw(spriteSheet, rect, new Rectangle(128, 656, CELL_SIZE, CELL_SIZE), Color.White);
         }
 
         public bool Reveal()

@@ -14,7 +14,8 @@ namespace Minesweeper
         private GraphicsDeviceManager _graphics;
         private SpriteBatch _spriteBatch;
 
-        private SpriteFont font;
+        private SpriteFont _font;
+        private Texture2D _spriteSheet;
 
         private Board _board;
         private InputManager _inputManager;
@@ -35,7 +36,7 @@ namespace Minesweeper
 
             base.Initialize();
             
-            _graphics.PreferredBackBufferHeight = 450;
+            _graphics.PreferredBackBufferHeight = 500;
             _graphics.PreferredBackBufferWidth = 700;
             _graphics.ApplyChanges();
         }
@@ -44,9 +45,10 @@ namespace Minesweeper
         {
             _spriteBatch = new SpriteBatch(GraphicsDevice);
 
-            font = Content.Load<SpriteFont>("Cells");
+            _font = Content.Load<SpriteFont>("Cells");
+            _spriteSheet = Content.Load<Texture2D>("mines");
 
-            _board = new Board(font);
+            _board = new Board(_font);
 
             _inputManager = new InputManager(_board);
 
@@ -71,13 +73,13 @@ namespace Minesweeper
 
         protected override void Draw(GameTime gameTime)
         {
-            GraphicsDevice.Clear(Color.White);
+            GraphicsDevice.Clear(Color.LightGray);
 
             // TODO: Add your drawing code here
             _spriteBatch.Begin();
 
 
-            _board.Draw(_spriteBatch, font);
+            _board.Draw(_spriteBatch, _spriteSheet);
 
             _spriteBatch.End();
 
