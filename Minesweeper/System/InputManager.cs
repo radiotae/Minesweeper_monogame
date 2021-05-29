@@ -85,8 +85,8 @@ namespace Minesweeper.System
                     }
 
                     //if right button is pressed and released, will flag and unflag HIDDEN cells
-                    if (_previousMouse.RightButton == ButtonState.Pressed
-                        && currentMouse.RightButton == ButtonState.Released
+                    if (_previousMouse.RightButton != ButtonState.Pressed
+                        && currentMouse.RightButton == ButtonState.Pressed
                         && currentMouse.LeftButton != ButtonState.Pressed
                         && _previousMouse.LeftButton != ButtonState.Pressed)
                     {

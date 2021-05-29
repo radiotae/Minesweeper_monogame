@@ -64,7 +64,9 @@ namespace Minesweeper
                 Exit();
 
             _board.Update(gameTime);
-            _inputManager.ProcessControls(gameTime);
+
+            if(IsActive)
+                _inputManager.ProcessControls(gameTime);
 
             // TODO: Add your update logic here
 

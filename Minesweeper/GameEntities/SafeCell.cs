@@ -28,9 +28,7 @@ namespace Minesweeper.GameEntities
             if (State == CellState.Hidden)
                 spriteBatch.Draw(spriteSheet, rect, new Rectangle(0, 0, CELL_SIZE, CELL_SIZE), Color.White);
             else if (State == CellState.Revealed)
-            {
                 spriteBatch.Draw(spriteSheet, rect, new Rectangle(0, 656 - (CELL_SIZE + 1) * Value, CELL_SIZE, CELL_SIZE), Color.White);
-            }
             else if (State == CellState.Pressed)
                 spriteBatch.Draw(spriteSheet, rect, new Rectangle(0, 656, CELL_SIZE, CELL_SIZE), Color.White);
             else if (State == CellState.Flagged)

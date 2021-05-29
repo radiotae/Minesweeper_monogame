@@ -22,7 +22,7 @@ namespace Minesweeper.GameEntities
         private ResetButton _reset;
 
         private double _realTime;
-        private int _displayTime => (int) _realTime;
+        private int _displayTime => (int) Math.Ceiling(_realTime);
         private bool _realHasStarted;
 
         //private bool _firstClick;
@@ -132,12 +132,16 @@ namespace Minesweeper.GameEntities
         //Otherwise, calls the reveal function of the cell which simply sets the cellstate to revealed
         public void Reveal(int x, int y)
         {
-            if(_revealed == 0 && _cellList[x,y].Value == -1)
+            if(_revealed == 0)
             {
-                do
+                
+                if (_cellList[x, y].Value == -1)
                 {
-                    MakeNewBoard();
-                } while (_cellList[x, y].Value == -1);
+                    do
+                    {
+                        MakeNewBoard();
+                    } while (_cellList[x, y].Value == -1);
+                }
 
                 _realHasStarted = true;
             }
@@ -196,17 +200,17 @@ namespace Minesweeper.GameEntities
             int[] time = SplitDigits(_displayTime);
             spriteBatch.Draw(spriteSheet,
                 new Rectangle(650 - 3 * 18 - 5, 5, 18, 33),
-                new Rectangle(128, 253 - (12 + 1) * time[0], 12, 22),
+                new Rectangle(128, 253 - (22 + 1) * time[0], 12, 22),
                 Color.White);
 
             spriteBatch.Draw(spriteSheet,
                 new Rectangle(650 - 2 * 18 - 5, 5, 18, 33),
-                new Rectangle(128, 253 - (12 + 1) * time[1], 12, 22),
+                new Rectangle(128, 253 - (22 + 1) * time[1], 12, 22),
                 Color.White);
 
             spriteBatch.Draw(spriteSheet,
                 new Rectangle(650 - 1 * 18 - 5, 5, 18, 33),
-                new Rectangle(128 , 253 - (12 + 1) * time[2], 12, 22),
+                new Rectangle(128 , 253 - (22 + 1) * time[2], 12, 22),
                 Color.White);
         }
 
