@@ -228,6 +228,9 @@ namespace Minesweeper.GameEntities
 
         private int[] SplitDigits(int input)
         {
+            if (input > 999)
+                input = 999;
+
             string inputStr = input.ToString().PadLeft(3, '0');
             int[] result = new int[inputStr.Length];
             for (int i = 0; i < result.Length; ++i)

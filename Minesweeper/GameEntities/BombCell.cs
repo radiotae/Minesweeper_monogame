@@ -30,8 +30,9 @@ namespace Minesweeper.GameEntities
             else if (State == CellState.Revealed)
                 spriteBatch.Draw(spriteSheet, rect, new Rectangle(128, 640, CELL_SIZE, CELL_SIZE), Color.White);
             else if (State == CellState.Pressed)
-                //spriteBatch.Draw(spriteSheet, rect, new Rectangle(0, 656, CELL_SIZE, CELL_SIZE), Color.White);
-                spriteBatch.Draw(spriteSheet, rect, new Rectangle(128, 640, CELL_SIZE, CELL_SIZE), Color.White);
+                //SWITCH OUT DRAW METHOD FOR DEBUGGING PURPOSES! First call pressed as intended, second will show bomb when pressed
+                spriteBatch.Draw(spriteSheet, rect, new Rectangle(0, 656, CELL_SIZE, CELL_SIZE), Color.White);
+                //spriteBatch.Draw(spriteSheet, rect, new Rectangle(128, 640, CELL_SIZE, CELL_SIZE), Color.White);
             else if (State == CellState.Flagged)
                 spriteBatch.Draw(spriteSheet, rect, new Rectangle(128, 624, CELL_SIZE, CELL_SIZE), Color.White);
             else if (State == CellState.MissingBomb)
