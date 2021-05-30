@@ -315,7 +315,15 @@ namespace Minesweeper.GameEntities
                         cell.State = CellState.Flagged;
                 }
             }
-                
+
+            if (GameState == GameState.GameOver)
+            {
+                foreach (ICell cell in _cellList)
+                {
+                    if (cell.Value == -1 && cell.State == CellState.Hidden)
+                        cell.State = CellState.MissingBomb;
+                }
+            }
 
 
 
