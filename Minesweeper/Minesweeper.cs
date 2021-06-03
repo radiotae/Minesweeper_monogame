@@ -3,6 +3,7 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using Minesweeper.GameEntities;
 using Minesweeper.System;
+using System;
 
 namespace Minesweeper
 {
@@ -19,6 +20,7 @@ namespace Minesweeper
 
         private Board _board;
         private InputManager _inputManager;
+        private HighScoreManager _highScoreManager;
 
         private Texture2D _test;
         
@@ -41,7 +43,7 @@ namespace Minesweeper
             _graphics.ApplyChanges();
         }
 
-        protected override void LoadContent()
+        protected override async void LoadContent()
         {
             _spriteBatch = new SpriteBatch(GraphicsDevice);
 
@@ -51,6 +53,10 @@ namespace Minesweeper
             _board = new Board(_font);
 
             _inputManager = new InputManager(_board);
+
+            _highScoreManager = new HighScoreManager();
+
+            _board.TakeScore(await _highScoreManager.Load());
 
             _test = new Texture2D(GraphicsDevice, 1, 1);
             _test.SetData(new Color[] { Color.Blue });

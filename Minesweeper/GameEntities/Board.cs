@@ -2,6 +2,7 @@
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
 namespace Minesweeper.GameEntities
@@ -21,9 +22,12 @@ namespace Minesweeper.GameEntities
         private Random _random;
         private ResetButton _reset;
 
+
         private double _realTime;
         private int _displayTime => (int) Math.Ceiling(_realTime);
         private bool _realHasStarted;
+        private List<double> _scoreList;
+        private const int MAX_SCORES = 5;
 
         //private bool _firstClick;
 
@@ -292,6 +296,28 @@ namespace Minesweeper.GameEntities
         public void HoldReset()
         {
             _reset.Press();
+        }
+
+        public void TakeScore(List<double> scoreList)
+        {
+            _scoreList = scoreList;
+        }
+
+        public List<double> GiveScore()
+        {
+            return _scoreList;
+        }
+
+        public void AddScore(double score)
+        {
+            if (_scoreList[MAX_SCORES - 1] < score)
+                return;
+
+            _scoreList.Add(score);
+
+            _scoreList.OrderByDescending(d => d);
+
+            _scoreList.RemoveAt(MAX_SCORES - 1);
         }
 
 
