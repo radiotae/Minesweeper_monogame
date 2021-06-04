@@ -27,43 +27,33 @@ namespace Minesweeper.System
 
             for (int i = 0; i < MAX_SCORES_SAVED; i++)
             {
-                _scoreList.Add(0);
+                _scoreList.Add(999);
             }
         }
 
-        public async Task ResetAndSave()
-        {
-            Reset();
-            await Save();
-        }
-
-        public async Task Save()
+        public async Task Save(List<double> scoreList)
         {
             /*string jsonString = JsonSerializer.Serialize(_scoreList);
             File.WriteAllText(_fileName, jsonString);*/
 
             await using (FileStream createStream = File.Create(_fileName))
             {
-                await JsonSerializer.SerializeAsync(createStream, _scoreList);
+                await JsonSerializer.SerializeAsync(createStream, scoreList);
             }
 
 
         }
 
-        public async Task<List<double>> Load()
+        public List<double> Load()
         {
-            string jsonString = File.ReadAllText(_fileName);
-            _scoreList = JsonSerializer.Deserialize<List<double>>(jsonString);
-
             if (!File.Exists(_fileName))
             {
-                await this.Save();
+                string jsonString = JsonSerializer.Serialize(_scoreList);
+                File.WriteAllText(_fileName, jsonString);
             }
 
-            await using (FileStream openStream = File.OpenRead(_fileName))
-            {
-                _scoreList = await JsonSerializer.DeserializeAsync<List<double>>(openStream);
-            }
+            string jsonStringLoad = File.ReadAllText(_fileName);
+            _scoreList = JsonSerializer.Deserialize<List<double>>(jsonStringLoad);
 
             return _scoreList;
                 

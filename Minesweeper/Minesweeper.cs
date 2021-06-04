@@ -4,6 +4,8 @@ using Microsoft.Xna.Framework.Input;
 using Minesweeper.GameEntities;
 using Minesweeper.System;
 using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace Minesweeper
 {
@@ -43,7 +45,7 @@ namespace Minesweeper
             _graphics.ApplyChanges();
         }
 
-        protected override async void LoadContent()
+        protected override void LoadContent()
         {
             _spriteBatch = new SpriteBatch(GraphicsDevice);
 
@@ -56,7 +58,9 @@ namespace Minesweeper
 
             _highScoreManager = new HighScoreManager();
 
-            _board.TakeScore(await _highScoreManager.Load());
+            //_board.TakeScore(_highScoreManager.Load());
+
+            var loadScore = _highScoreManager.Load();
 
             _test = new Texture2D(GraphicsDevice, 1, 1);
             _test.SetData(new Color[] { Color.Blue });
@@ -66,7 +70,8 @@ namespace Minesweeper
 
         protected override void Update(GameTime gameTime)
         {
-            if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
+            if ((GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
+                && _board.SaveTask.Count == 0)
                 Exit();
 
             _board.Update(gameTime);

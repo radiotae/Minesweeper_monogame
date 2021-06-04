@@ -1,9 +1,11 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using Minesweeper.System;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace Minesweeper.GameEntities
 {
@@ -29,15 +31,25 @@ namespace Minesweeper.GameEntities
         private List<double> _scoreList;
         private const int MAX_SCORES = 5;
 
+        private HighScoreManager _scoreManager;
+
         //private bool _firstClick;
 
         private int _bombsFlagged;
         private int _revealed;
         public GameState GameState { get; private set; }
 
+        public List<Task> SaveTask { get; private set; }
+
         public Board(SpriteFont font)
         {
             _random = new Random();
+
+            _scoreManager = new HighScoreManager();
+
+            _scoreList = _scoreManager.Load();
+
+            SaveTask = new List<Task>();
 
             MakeNewBoard();
 
@@ -331,6 +343,16 @@ namespace Minesweeper.GameEntities
 
             _reset.Release();
 
+            if(SaveTask.Count > 0)
+            {
+                foreach (Task task in SaveTask)
+                {
+                    if (task.IsCompleted)
+                        SaveTask.Remove(task);
+                }
+            }
+            
+
             if (_revealed == TOTAL_SAFE_CELLS && GameState == GameState.Running)
             {
                 GameState = GameState.Victory;
@@ -340,6 +362,10 @@ namespace Minesweeper.GameEntities
                     if (cell.State == CellState.Hidden && cell.Value == -1)
                         cell.State = CellState.Flagged;
                 }
+
+                this.AddScore(_realTime);
+
+                SaveTask.Add(_scoreManager.Save(_scoreList));
             }
 
             if (GameState == GameState.GameOver)
