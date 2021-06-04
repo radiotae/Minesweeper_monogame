@@ -17,10 +17,14 @@ namespace Minesweeper.System
 
         private Rectangle _reset;
 
+        private Rectangle test_save;
+
         public InputManager(Board board)
         {
             _board = board;
-            _reset = new Rectangle(350 - 30 / 2, 20, 30, 30);
+            _reset = new Rectangle(325 - 30 / 2, 20, 30, 30);
+
+            test_save = new Rectangle(640, 0, 10, 10);
         }
 
         public void ProcessControls(GameTime gameTime)
@@ -35,6 +39,11 @@ namespace Minesweeper.System
 
             if (_reset.Contains(currentMouse.Position) && currentMouse.LeftButton == ButtonState.Pressed)
                 _board.HoldReset();
+            /*
+            if (_previousMouse.LeftButton == ButtonState.Pressed
+                && currentMouse.LeftButton == ButtonState.Released
+                && test_save.Contains(currentMouse.Position))
+                _board.Save();*/
 
             //Only accept inputs when GameState is set to Running
             if (_board.GameState == GameState.Running)

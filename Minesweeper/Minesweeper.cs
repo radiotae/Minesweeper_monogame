@@ -3,9 +3,7 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using Minesweeper.GameEntities;
 using Minesweeper.System;
-using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
+
 
 namespace Minesweeper
 {
@@ -71,7 +69,7 @@ namespace Minesweeper
         protected override void Update(GameTime gameTime)
         {
             if ((GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
-                && _board.SaveTask.Count == 0)
+                && _board.SaveTasks.Count == 0)
                 Exit();
 
             _board.Update(gameTime);

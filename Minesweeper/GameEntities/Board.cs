@@ -39,7 +39,8 @@ namespace Minesweeper.GameEntities
         private int _revealed;
         public GameState GameState { get; private set; }
 
-        public List<Task> SaveTask { get; private set; }
+        public List<Task> SaveTasks { get; private set; }
+        private List<Task> _finishedTasks;
 
         public Board(SpriteFont font)
         {
@@ -49,7 +50,8 @@ namespace Minesweeper.GameEntities
 
             _scoreList = _scoreManager.Load();
 
-            SaveTask = new List<Task>();
+            SaveTasks = new List<Task>();
+            _finishedTasks = new List<Task>();
 
             MakeNewBoard();
 
@@ -343,13 +345,21 @@ namespace Minesweeper.GameEntities
 
             _reset.Release();
 
-            if(SaveTask.Count > 0)
+            if(SaveTasks.Count > 0)
             {
-                foreach (Task task in SaveTask)
+
+                foreach (Task task in SaveTasks)
                 {
                     if (task.IsCompleted)
-                        SaveTask.Remove(task);
+                        _finishedTasks.Add(task);
                 }
+
+                foreach (Task task in _finishedTasks)
+                {
+                    SaveTasks.Remove(task);
+                }
+
+                _finishedTasks.Clear();
             }
             
 
@@ -365,7 +375,7 @@ namespace Minesweeper.GameEntities
 
                 this.AddScore(_realTime);
 
-                SaveTask.Add(_scoreManager.Save(_scoreList));
+                SaveTasks.Add(_scoreManager.Save(_scoreList));
             }
 
             if (GameState == GameState.GameOver)
@@ -387,5 +397,18 @@ namespace Minesweeper.GameEntities
             }
             
         }
+        /*
+        public void Save()
+        {
+            List<double> test = new List<double>();
+
+            test.Add(400);
+            test.Add(400);
+            test.Add(400);
+            test.Add(400);
+            test.Add(600);
+
+            SaveTasks.Add(_scoreManager.Save(test));
+        }*/
     }
 }
