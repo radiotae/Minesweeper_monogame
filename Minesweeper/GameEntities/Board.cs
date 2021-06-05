@@ -33,6 +33,8 @@ namespace Minesweeper.GameEntities
 
         private HighScoreManager _scoreManager;
 
+        private SpriteFont _font;
+
         //private bool _firstClick;
 
         private int _bombsFlagged;
@@ -45,6 +47,8 @@ namespace Minesweeper.GameEntities
         public Board(SpriteFont font)
         {
             _random = new Random();
+
+            _font = font;
 
             _scoreManager = new HighScoreManager();
 
@@ -204,32 +208,50 @@ namespace Minesweeper.GameEntities
 
         public void Draw(SpriteBatch spriteBatch, Texture2D spriteSheet)
         {
-            _reset.Draw(spriteBatch, new Rectangle(350 - 30 / 2, RESET_BUTTON_HEIGH_MARGIN, 30, 30), spriteSheet, GameState);
+            if (SaveTasks.Count > 0)
+                spriteBatch.DrawString(_font, "Saving...", new Vector2(60, 5), Color.Black);
 
-            for (int x = 0; x < BOARD_WIDTH; x++)
+            if (GameState != GameState.HighScores)
             {
-                for (int y = 0; y < BOARD_HEIGHT; y++)
+                _reset.Draw(spriteBatch, new Rectangle(325 - 30 / 2, RESET_BUTTON_HEIGH_MARGIN, 30, 30), spriteSheet, GameState);
+
+                for (int x = 0; x < BOARD_WIDTH; x++)
                 {
-                    //_cellList[x, y].Draw(spriteBatch, new Vector2(WIDTH_MARGIN + x * CELL_SIZE, HEIGHT_MARGIN + y * CELL_SIZE), spriteSheet);
-                    _cellList[x, y].Draw(spriteBatch, new Rectangle(WIDTH_MARGIN + x * CELL_SIZE, HEIGHT_MARGIN + y * CELL_SIZE, 20, 20), spriteSheet);
+                    for (int y = 0; y < BOARD_HEIGHT; y++)
+                    {
+                        //_cellList[x, y].Draw(spriteBatch, new Vector2(WIDTH_MARGIN + x * CELL_SIZE, HEIGHT_MARGIN + y * CELL_SIZE), spriteSheet);
+                        _cellList[x, y].Draw(spriteBatch, new Rectangle(WIDTH_MARGIN + x * CELL_SIZE, HEIGHT_MARGIN + y * CELL_SIZE, 20, 20), spriteSheet);
+                    }
+                }
+
+                int[] time = SplitDigits(_displayTime);
+                spriteBatch.Draw(spriteSheet,
+                    new Rectangle(650 - 3 * 18 - 5, 5, 18, 33),
+                    new Rectangle(128, 253 - (22 + 1) * time[0], 12, 22),
+                    Color.White);
+
+                spriteBatch.Draw(spriteSheet,
+                    new Rectangle(650 - 2 * 18 - 5, 5, 18, 33),
+                    new Rectangle(128, 253 - (22 + 1) * time[1], 12, 22),
+                    Color.White);
+
+                spriteBatch.Draw(spriteSheet,
+                    new Rectangle(650 - 1 * 18 - 5, 5, 18, 33),
+                    new Rectangle(128, 253 - (22 + 1) * time[2], 12, 22),
+                    Color.White);
+            }
+            else
+            {
+                spriteBatch.DrawString(_font, "Top Times", new Vector2(0, 0), Color.Black);
+
+                for (int i=0; i<MAX_SCORES; i++)
+                {
+                    spriteBatch.DrawString(_font, (i+1).ToString() + ". ", new Vector2(10, 50 + i * 20), Color.Black);
+                    spriteBatch.DrawString(_font, _scoreList[i].ToString(), new Vector2(35, 50 + i * 20), Color.Black);
                 }
             }
 
-            int[] time = SplitDigits(_displayTime);
-            spriteBatch.Draw(spriteSheet,
-                new Rectangle(650 - 3 * 18 - 5, 5, 18, 33),
-                new Rectangle(128, 253 - (22 + 1) * time[0], 12, 22),
-                Color.White);
-
-            spriteBatch.Draw(spriteSheet,
-                new Rectangle(650 - 2 * 18 - 5, 5, 18, 33),
-                new Rectangle(128, 253 - (22 + 1) * time[1], 12, 22),
-                Color.White);
-
-            spriteBatch.Draw(spriteSheet,
-                new Rectangle(650 - 1 * 18 - 5, 5, 18, 33),
-                new Rectangle(128 , 253 - (22 + 1) * time[2], 12, 22),
-                Color.White);
+            
         }
 
         //Given the input cell coordinates, will press the surrounding cells IF they are hidden
@@ -327,11 +349,13 @@ namespace Minesweeper.GameEntities
             if (_scoreList[MAX_SCORES - 1] < score)
                 return;
 
-            _scoreList.Add(score);
+            double inputScore = Math.Round(score, 2, MidpointRounding.AwayFromZero);
 
-            _scoreList.OrderByDescending(d => d);
+            _scoreList.Add(inputScore);
 
-            _scoreList.RemoveAt(MAX_SCORES - 1);
+            _scoreList.Sort();
+
+            _scoreList.RemoveAt(MAX_SCORES);
         }
 
 
@@ -396,6 +420,28 @@ namespace Minesweeper.GameEntities
                     cell.State = CellState.Hidden;
             }
             
+        }
+
+        public void GoToHighScores()
+        {
+            GameState = GameState.HighScores;
+        }
+
+        public void GoToBoard()
+        {
+            GameState = GameState.Running;
+        }
+
+        public void RevealAll()
+        {
+            foreach (ICell cell in _cellList)
+            {
+                if (cell.State == CellState.Hidden && cell.Value != -1)
+                {
+                    cell.Reveal();
+                    _revealed++;
+                }
+            }
         }
         /*
         public void Save()

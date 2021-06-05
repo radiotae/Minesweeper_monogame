@@ -4,6 +4,7 @@
     {
         Running,
         GameOver,
-        Victory
+        Victory,
+        HighScores
     }
 }

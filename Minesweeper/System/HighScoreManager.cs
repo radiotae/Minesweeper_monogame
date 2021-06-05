@@ -39,6 +39,7 @@ namespace Minesweeper.System
             await using (FileStream createStream = File.Create(_fileName))
             {
                 await JsonSerializer.SerializeAsync(createStream, scoreList);
+                Task.Delay(3000).Wait();
             }
 
 

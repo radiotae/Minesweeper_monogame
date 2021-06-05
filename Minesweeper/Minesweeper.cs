@@ -22,7 +22,7 @@ namespace Minesweeper
         private InputManager _inputManager;
         private HighScoreManager _highScoreManager;
 
-        private Texture2D _test;
+        //private Texture2D _test;
         
 
         public Minesweeper()
@@ -59,9 +59,9 @@ namespace Minesweeper
             //_board.TakeScore(_highScoreManager.Load());
 
             var loadScore = _highScoreManager.Load();
-
+            /*
             _test = new Texture2D(GraphicsDevice, 1, 1);
-            _test.SetData(new Color[] { Color.Blue });
+            _test.SetData(new Color[] { Color.Blue });*/
 
             // TODO: use this.Content to load your game content here
         }
